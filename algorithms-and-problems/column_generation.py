@@ -1,3 +1,6 @@
+'''
+This file is based on pulp
+'''
 import random  ## to generate the items
 from pulp import * ## import pulp-or functions
 

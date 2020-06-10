@@ -12,6 +12,7 @@ x = [xp.var(vartype=xp.binary) for i in S]
 profit = xp.Sum(value[i] * x[i] for i in S)
 
 p = xp.problem("knapsack")
+
 p.addVariable(x)
 p.addConstraint(xp.Sum(weight[i] * x[i] for i in S) <= 130)
 p.setObjective(profit, sense=xp.maximize)
