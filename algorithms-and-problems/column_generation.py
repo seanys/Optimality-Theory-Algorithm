@@ -1,8 +1,9 @@
 '''
 This file is based on pulp
+Original: https://gist.github.com/Bart6114/8414730
 '''
-import random  ## to generate the items
-from pulp import * ## import pulp-or functions
+from pulp import * # 该Column Generation基于Pulp
+import random  # 生成随机数
 
 class MasterProblem:
 	def __init__(self, maxValue, itemLengths, itemDemands, initialPatterns, problemname):
@@ -12,9 +13,9 @@ class MasterProblem:
 		self.itemDemands=itemDemands
 		self.initialPatterns=initialPatterns
 		
-		self.prob = LpProblem(problemname,LpMinimize)	# set up the problem
+		self.prob = LpProblem(problemname,LpMinimize)	# 建立厨师问题
 		
-		self.obj = LpConstraintVar("obj")   # generate a constraint variable that will be used as the objective
+		self.obj = LpConstraintVar("obj")   # 建立目标函数的约束变量
 		self.prob.setObjective(self.obj)
 		
 		self.PatternVars=[]
@@ -40,9 +41,8 @@ class MasterProblem:
 		self.prob.solve()  # start solve
 		
 		return [self.prob.constraints[i].pi for i in self.prob.constraints]
-		
-			
-		
+
+
 	def addPattern(self,pattern):  # add new pattern to existing model
 		
 		self.initialPatterns.append(pattern)
@@ -89,8 +89,6 @@ class SlaveProblem:
         self.slaveprob.solve() 
         self.slaveprob.roundSolution() #to avoid rounding problems
 
-        
-
     def returnPattern(self):
         pattern=False
         if value(self.slaveprob.objective) < -1.00001:
@@ -101,7 +99,6 @@ class SlaveProblem:
 	
 		
 random.seed(2012)
-
 
 nrItems=12
 lengthSheets=20

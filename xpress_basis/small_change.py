@@ -1,7 +1,4 @@
-#
-# Example: changing an optimization problem
-#          using the Xpress Python interface
-#
+# 修改参数系数的案例
 
 import xpress as xp
 
@@ -17,9 +14,9 @@ p.addVariable(x, y)
 p.setObjective((x-4)**2 + (y-1)**2)
 p.addConstraint(cons1, upperlim)
 
-p.write('original', 'lp')
+p.write('res/original', 'lp')
 
-p.chgcoef(cons1, x, 3)  # coefficient of x in cons1    becomes 3
-p.chgcoef(1, 0, 4)      # coefficient of y in upperlim becomes 4
+p.chgcoef(cons1, x, 3)  # 修改x在cons1的系数为3
+p.chgcoef(1, 0, 4)      # 修改第1个约束upperlim中y的系数为4
 
-p.write('changed', 'lp')
+p.write('res/changed', 'lp')

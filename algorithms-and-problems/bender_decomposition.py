@@ -50,9 +50,11 @@ p.setObjective(xp.Sum(c1[jj]*x[jj] for jj in range(n1)) +                      \
 # 解该问题
 p.solve()
 
+# 检查当前状态
 if p.getProbStatus() != xp.mip_optimal:
     raise RuntimeError('Problem could not be solved to MIP optimality')
 
+# 获得解，第一阶段的变量，第二阶段的变量，二季短的目标
 yopt = p.getSolution(y)
 print("The optimal objective is:", p.getObjVal())
 print("The first stage variables are:", p.getSolution(x))
@@ -179,10 +181,10 @@ def node_callback(p, data):
     thetahat=s[thetaind[0]]
     print("Solution tested x=",xhat, "and theta=",thetahat)
 
-    # Solve the subproblem
+    # 开始解子问题
     (dual_mult,opt,status)=subproblem(xhat)
     if status=='Infeasible':
-        # Create feasibility cut to add to node
+        # 创建feasibility cut
         coefficients=dual_mult
         rhs=-opt
         print("Add cut. Cut stats:")
@@ -231,7 +233,19 @@ p.addVariable(x,theta)
 p.setObjective(xp.Sum(c1[jj]*x[jj] for jj in range(n1)) +  theta               \
                ,sense=xp.minimize)
 
+# Declares a user integer solution callback function, called when an 
+# integer solution is found by heuristics or during the branch and bound 
+# search, but before it is accepted by the Optimizer. This callback 
+# function will be called in addition to any integer solution callbacks 
+# already added by addcbpreintsol.
 p.addcbpreintsol (integer_callback, None, 0)
+
+# Declares an optimal node callback function, called during the branch and 
+# bound search, after the LP relaxation has been solved for the current 
+# node, and after any internal cuts and heuristics have been applied, but 
+# before the Optimizer checks if the current node should be branched. This 
+# callback function will be called in addition to any callbacks already 
+# added by addcboptnode.
 p.addcboptnode (node_callback, None, 0)
 
 p.setControl({"presolve":0,"mippresolve":0,"symmetry":0})

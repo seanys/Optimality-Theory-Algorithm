@@ -13,6 +13,7 @@ import xpress as xp
 N = 4
 S = range(N)
 
+# 定义变量 - 连续变量和二进制变量
 v1 = xp.var(name="v1", lb=0, ub=10, threshold=5, vartype=xp.continuous)
 v2 = xp.var(name="v2", lb=1, ub=7, threshold=3, vartype=xp.continuous)
 vb = xp.var(name="vb", vartype=xp.binary)

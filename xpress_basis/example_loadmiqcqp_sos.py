@@ -35,5 +35,5 @@ p.loadproblem("",  # probname
               [0, 1, 0, 2],  # mscols
               [1.1, 1.2, 1.3, 1.4])      # dref
 
-p.write("loadedqcgs", "lp")
+p.write("res/loadedqcgs", "lp")
 p.solve()
