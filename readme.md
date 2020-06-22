@@ -1,25 +1,17 @@
 ## Introduction
 
-This repository contains three algorithms intoduced in Prof. Liang Zhe's Optimization Theory and their simple application to Cutting and Packing Problem and Multi Commodity Network Flow Problem. Code is in fold [Algorithms-and-Problems](algorithms-and-problems). 
+This repository contains three algorithms intoduced in Prof. Liang Zhe's Optimization Theory and their simple application to Cutting and Packing Problem and Multi Commodity Network Flow Problem. 
 
-Our code mainly based on [XpressOptimization](https://www.fico.com/fico-xpress-optimization/docs/latest/examples/python/GUID-E77AC35C-9488-3F0A-98B4-7F5FD81AFF1D.html)'s tutorial. In this readme file, we will firstly introduce the usage of XPressOptimization,
+Our code mainly based on [XpressOptimization](https://www.fico.com/fico-xpress-optimization/docs/latest/examples/python/GUID-E77AC35C-9488-3F0A-98B4-7F5FD81AFF1D.html)'s tutorial. In this readme file, we will firstly introduce the usage of XPressOptimization.
 
-We mainly consult  python examples and we simply introduce our modification. 
-
-Besides, we also apply them to solve 
+Source code：[Algorithms-and-Problems](algorithms-and-problems)
 
 - [XPress Optimization](#xpress-optimization)
   * [Official](#official)
   * [Set Problem Step by Step](#set-problem-step-by-step)
   * [Directly Load Problem](#directly-load-problem)
   * [Change Constrain](#change-constrain)
-- [How to realize ](#how-to-realize)
-  * [Column Generation](#column-generation)
-  * [DW Decomposition](#dw-decomposition)
-  * [Bender Decomposition](#bender-decomposition)
-  * [Cutting  Stock Problem（todo）](#cutting--stock-problem)
-  * [Multi Commodity Network Flow Problem（todo）](#multi-commodity-network-flow-problem)
-- [Theories](#theories)
+- [Algorithms](#algorithms)
   * [Column Generation](#column-generation-1)
   * [DW Decomposition](#dw-decomposition-1)
   * [Bender Decomposition](#bender-decomposition-1)
@@ -123,68 +115,43 @@ p.chgcoef(cons1, x, 3)  # 修改x在cons1的系数为3
 p.chgcoef(1, 0, 4)      # 修改第1个约束upperlim中第0个变量y的系数为4
 ```
 
-
-
-## How to realize
-
-We will first introduce how to implement algorithms. If you have any questions about the principle of the algorithm, you can consult then the next two sections.
+## Algorithms
 
 ### Column Generation
 
-We use pulp 
-
-
-
-### DW Decomposition
-
-
-
-### Bender Decomposition
-
-
-
-### Cutting  Stock Problem
-
-
-
-### Multi Commodity Network Flow Problem
-
-
-
-
-
-
-## Theories
-
-### Column Generation
+Code: [column generation.py](algorithms-and-problems/column_generation.py)
 
 Author: Prof. Liang Zhe
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610200703746.png" alt="image-20200610200703746" width="750px" />
+<img src="img/image-20200610200703746.png" alt="image-20200610200703746" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610200806120.png" alt="image-20200610200806120" width="750px" />
+<img src="img/image-20200610200806120.png" alt="image-20200610200806120" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610200837229.png" alt="image-20200610200837229" width="750px" />
+<img src="img/image-20200610200837229.png" alt="image-20200610200837229" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201146855.png" alt="image-20200610201146855" width="750px" />
+<img src="img/image-20200610201146855.png" alt="image-20200610201146855" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201217134.png" alt="image-20200610201217134" width="750px" />
+<img src="img/image-20200610201217134.png" alt="image-20200610201217134" width="750px" />
 
 ### DW Decomposition
 
+Code: [dw decomposition.py](algorithms-and-problems/dw_decomposition.py)
+
 Author: Prof. Liang Zhe
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201321640.png" alt="image-20200610201321640" width="750px" />
+<img src="img/image-20200610201321640.png" alt="image-20200610201321640" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201334758.png" alt="image-20200610201334758" width="750px" />
+<img src="img/image-20200610201334758.png" alt="image-20200610201334758" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201351920.png" alt="image-20200610201351920" width="750px" />
+<img src="img/image-20200610201351920.png" alt="image-20200610201351920" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201412156.png" alt="image-20200610201412156" width="750px" />
+<img src="img/image-20200610201412156.png" alt="image-20200610201412156" width="750px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610201433137.png" alt="image-20200610201433137" width="750px" />
+<img src="img/image-20200610201433137.png" alt="image-20200610201433137" width="750px" />
 
 ### Bender Decomposition
+
+Code: [bender decomposition.py](algorithms-and-problems/bender_decomposition.py)
 
 **Bender Decomposition is a algorithm for MIP problem.**
 
@@ -201,9 +168,9 @@ Author: Prof. Liang Zhe
 
 <img src="img/image-20200610113002827.png" alt="image-20200610113002827" height="500px" />
 
-<img src="/Users/sean/Documents/Projects/My Github/Optimization-Theory-Algorithm/img/image-20200610113040574.png" alt="image-20200610113040574" height="340px" />
+<img src="img/image-20200610113040574.png" alt="image-20200610113040574" height="340px" />
 
-<img src="/Users/sean/Library/Application Support/typora-user-images/image-20200610194807165.png" alt="image-20200610194807165" height="400px" />
+<img src="img/image-20200610194807165.png" alt="image-20200610194807165" height="400px" />
 
 ## Problems
 

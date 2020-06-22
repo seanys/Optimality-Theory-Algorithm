@@ -13,37 +13,36 @@ class MasterProblem:
 		self.itemDemands=itemDemands
 		self.initialPatterns=initialPatterns
 		
-		self.prob = LpProblem(problemname,LpMinimize)	# 建立厨师问题
+		self.prob = LpProblem(problemname,LpMinimize)	# 建立初始问题
 		
 		self.obj = LpConstraintVar("obj")   # 建立目标函数的约束变量
 		self.prob.setObjective(self.obj)
 		
 		self.PatternVars=[]
-		self.constraintList=[]   # list to save constraint variables in
-		for i,x in enumerate(itemDemands):		# create variables & set the constraints, in other words: set the minimum amount of items to be produced
-			var=LpConstraintVar("C"+str(i),LpConstraintGE,x)  # create constraintvar and set to >= demand for item
+		self.constraintList=[]   # 约束函数部分
+		for i,x in enumerate(itemDemands):		# 建立全部的变量和约束
+			var=LpConstraintVar("C"+str(i),LpConstraintGE,x) 
 			self.constraintList.append(var)
 			self.prob+=var
 		
 			
-		for i,x in enumerate(self.initialPatterns):  #save initial patterns and set column constraints 
+		for i,x in enumerate(self.initialPatterns):  # 建立初始的解
 			temp=[]
 			for j,y in enumerate(x):
 				if y>0: 
 					temp.append(j)
 			
-			
 			var=LpVariable("Pat"+str(i)	, 0, None, LpContinuous, lpSum(self.obj+[self.constraintList[v] for v in temp]))  # create decision variable: will determine how often pattern x should be produced
 			self.PatternVars.append(var)
 		
 	def solve(self):
-		self.prob.writeLP('prob.lp')
-		self.prob.solve()  # start solve
+		self.prob.writeLP('res/prob.lp')
+		self.prob.solve()
 		
 		return [self.prob.constraints[i].pi for i in self.prob.constraints]
 
 
-	def addPattern(self,pattern):  # add new pattern to existing model
+	def addPattern(self,pattern):  # 增加新的模式
 		
 		self.initialPatterns.append(pattern)
 		temp=[]
@@ -85,7 +84,7 @@ class SlaveProblem:
         self.slaveprob+=-lpSum([duals[i]*x for i,x in enumerate(self.varList)])  #use duals to set objective coefficients
         self.slaveprob+=lpSum([itemLengths[i]*x for i,x in enumerate(self.varList)])<=maxValue 
 
-        self.slaveprob.writeLP('slaveprob.lp')
+        self.slaveprob.writeLP('res/slaveprob.lp')
         self.slaveprob.solve() 
         self.slaveprob.roundSolution() #to avoid rounding problems
 
