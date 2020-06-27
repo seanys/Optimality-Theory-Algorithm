@@ -2,7 +2,7 @@
 
 This repository contains three algorithms intoduced in Prof. Liang Zhe's Optimization Theory and their simple application to Cutting and Packing Problem and Multi Commodity Network Flow Problem. 
 
-Our code mainly based on [XpressOptimization](https://www.fico.com/fico-xpress-optimization/docs/latest/examples/python/GUID-E77AC35C-9488-3F0A-98B4-7F5FD81AFF1D.html)'s tutorial. In this readme file, we will firstly introduce the usage of XPressOptimization.
+Our code mainly based on [XpressOptimization](https://www.fico.com/fico-xpress-optimization/docs/latest/examples/python/GUID-E77AC35C-9488-3F0A-98B4-7F5FD81AFF1D.html)'s tutorial. In this readme file, we will firstly introduce the usage of XPressOptimization. The usage of [pulp](https://pypi.org/project/PuLP/) is similar.
 
 Source code：[Algorithms-and-Problems](algorithms-and-problems)
 
@@ -12,12 +12,12 @@ Source code：[Algorithms-and-Problems](algorithms-and-problems)
   * [Directly Load Problem](#directly-load-problem)
   * [Change Constrain](#change-constrain)
 - [Algorithms](#algorithms)
-  * [Column Generation](#column-generation-1)
-  * [DW Decomposition](#dw-decomposition-1)
-  * [Bender Decomposition](#bender-decomposition-1)
+  * [Column Generation](#column-generation)
+  * [DW Decomposition](#dw-decomposition)
+  * [Bender Decomposition](#bender-decomposition)
 - [Problems](#problems)
-  * [Cutting Stock Problem（todo）](#cutting-stock-problem-todo-)
-  * [Multi Commodity Network Flow Problem（todo）](#multi-commodity-network-flow-problem-todo-)
+  * [Cutting Stock Problem（todo）](#cutting-stock-problem)
+  * [Multi Commodity Network Flow Problem（todo）](#multi-commodity-network-flow-problem)
 
 ## XPress Optimization
 
@@ -174,15 +174,22 @@ Code: [bender decomposition.py](algorithms-and-problems/bender_decomposition.py)
 
 ## Problems
 
-### Cutting Stock Problem（todo）
+### Cutting Stock Problem
 
 Column Generation
 
 
 
-### Multi Commodity Network Flow Problem（todo）
+### Multi Commodity Network Flow Problem
 
 DW Decomposition
 
 
 
+## Other Algorithms
+
+### Branch and Price
+
+
+
+### Lagrangian Relaxation

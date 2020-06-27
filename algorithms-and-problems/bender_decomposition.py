@@ -1,8 +1,16 @@
+'''
+算法：Bender Decomposition
+原理：部分变量比较复杂，部分变量比较简单，所以将他们拆分，分别作为Master 
+Problem和Sub Problem，通过求解Sub Problem来对Master Problem进行切割
+过程：如果子问题可行，那么更新Upper Bounder和Lower Bounder，增加可行切
+面，如果不可行，即对偶问题无边界，那么寻找Extreme Point，增加可行切面并解
+问题，更新LB
 #### Solves the problem:
 #### min c1*x + c2*y
 #### st  A1*x + A2*y <=b (m constraints)
 #### x binary n1-dimensional vector
 #### y >=0 continuous n2-dimensional vector
+'''
 
 import xpress as xp
 import sys
@@ -62,16 +70,17 @@ print("The second stage variables are:", yopt)
 print("The objective of the second stage is:",                                 \
        sum(c2[jj]*yopt[jj] for jj in range(n2)))
 
-# 子问题求解
 def subproblem(xhat):
+    '''子问题求解
 
+    '''
     # 初始化问题
-    r=xp.problem()
+    r = xp.problem()
 
     # 定义变量
-    y=[xp.var() for i in range(n2)]
-    z=[xp.var(lb=-xp.infinity) for i in range(n1)]
-    epsilon=xp.var(lb=-xp.infinity)
+    y = [xp.var() for i in range(n2)]
+    z = [xp.var(lb=-xp.infinity) for i in range(n1)]
+    epsilon = xp.var(lb=-xp.infinity)
     r.addVariable(y,z,epsilon)
 
     # 定义约束
@@ -110,7 +119,7 @@ def subproblem(xhat):
             lamb=[2*xhat[ii]-1 for ii in range(n1)]
             beta=-sum(xhat)+1
         else:
-            # Extract the dual ray
+            # 求解对偶
             dray = []
             r.getdualray (dray)
             print ("Dual Ray:", dray)
@@ -121,9 +130,11 @@ def subproblem(xhat):
         print("ERROR: Subproblem not optimal or infeasible. Terminating.")
         sys.exit()
 
-# 整数回收函数
 def integer_callback(p, data, isheuristic, cutoff):
-
+    '''整数规划返回函数
+    1. 如果切面不可行，直接拒绝
+    2. 如果最优，则判断函数，部分情况下可以接受该切面
+    '''
     print("Entering Integer Callback.")
     if isheuristic ==0:
         print("Integer solution from optimal node relaxation.")
@@ -131,58 +142,52 @@ def integer_callback(p, data, isheuristic, cutoff):
         return(False,None)
     else:
         print("Integer solution found from heuristic. Checking subproblem.")
-        s=[]
-        p.getlpsol(s,None,None,None) # This will load the solution to array s
+        s = []
+        p.getlpsol(s,None,None,None) # 加载具体问题
 
-        # Obtain indices of x and theta in the original problem
-        xind=[p.getIndex(x[ii]) for ii in range(n1)]
-        thetaind=[p.getIndex(theta)]
-
-        # Construct xhat and thetahat based on the vector s where the full
-        # solution was stored and the variable indices
-        xhat=[s[ii] for ii in xind]
-        thetahat=s[thetaind[0]]
+        # 获得x和theta的切片并建立
+        xind = [p.getIndex(x[ii]) for ii in range(n1)]
+        thetaind = [p.getIndex(theta)]
+        xhat = [s[ii] for ii in xind]
+        thetahat = s[thetaind[0]]
         print("Solution tested x=",xhat, "and theta=",thetahat)
         print("Cutoff is:",cutoff)
 
-        # Solve the subproblem
-        (dual_mult,opt,status)=subproblem(xhat)
+        # 解Subproblem
+        (dual_mult,opt,status) = subproblem(xhat)
 
-        if status=='Infeasible':
-            # In the case of an infeasible subproblem, simply reject the solution found
+        if status == 'Infeasible':
             return (True,None)
-        elif status=='Optimal':
-            if thetahat>=opt-ObjAbsAccuracy:
-                # In this case the vector (xhat,thetahat) is feasible, so accept
-                # it and accept the cutoff
+        elif status == 'Optimal':
+            if thetahat >= opt-ObjAbsAccuracy:
                 print("Accepting pair x=",xhat,",theta=",thetahat )
                 print("Accept new cutoff:",cutoff)
                 return(False,None)
             else:
-                # In this case the solution (xhat,thetahat) is infeasible so
-                # reject it
                 return (True,None)
         else:
             print("We shouldn't reach this point.")
             print("Rejecting pair x=",xhat,",theta=",thetahat )
             return(True,None)
 
-# 点的回收函数
 def node_callback(p, data):
-
+    '''
+    1. 不可行，则拒绝该点，增加一个切面
+    2. 可行且最优，则需要判断具体情况，第一种情况是接受，第二种情况
+    拒绝，并且增加切面，具体计算如下
+    '''
     print("We entered a node callback")
 
-    # Obtain node relaxation solution
-    s=[]
+    s = []
     p.getlpsol(s,None,None,None)
-    xind=[p.getIndex(x[ii]) for ii in range(n1)]
-    thetaind=[p.getIndex(theta)]
-    xhat=[s[ii] for ii in xind]
-    thetahat=s[thetaind[0]]
+    xind = [p.getIndex(x[ii]) for ii in range(n1)]
+    thetaind = [p.getIndex(theta)]
+    xhat = [s[ii] for ii in xind]
+    thetahat = s[thetaind[0]]
     print("Solution tested x=",xhat, "and theta=",thetahat)
 
     # 开始解子问题
-    (dual_mult,opt,status)=subproblem(xhat)
+    (dual_mult,opt,status) = subproblem(xhat)
     if status=='Infeasible':
         # 创建feasibility cut
         coefficients=dual_mult
@@ -191,21 +196,20 @@ def node_callback(p, data):
         print("coefficients:",coefficients)
         print("<=rhs:",rhs)
         print("column indices:",xind)
-        # Add the cut (this will reject the point)
+        # 拒绝该点，增加切面
         p.addcuts([1],['L'],[rhs],[0,len(xhat)],xind,coefficients)
         print("Rejecting pair x=",xhat,",theta=",thetahat, "with a cut." )
         return 0
     elif status=='Optimal':
-        if thetahat>=opt-ObjAbsAccuracy:
-            # In this case the vector (xhat,thetahat) is feasible, so accept
+        if thetahat >= opt - ObjAbsAccuracy:
+            # 可行，接受
             print("Accepting pair x=",xhat,",theta=",thetahat )
             print("An integer callback will be triggered for that pair later.")
             return 0
         else:
-            # In this case the solution (xhat,thetahat) is infeasible so reject
-            # it and add an optimality cut
-            coefficients=[1]+[-dual_mult[ii] for ii in range(len(dual_mult))]
-            rhs=opt-sum(dual_mult[ii]*xhat[ii] for ii in range(len(dual_mult)))
+            # 不可行，所以拒绝，并增加切面
+            coefficients = [1] + [-dual_mult[ii] for ii in range(len(dual_mult))]
+            rhs = opt - sum(dual_mult[ii]*xhat[ii] for ii in range(len(dual_mult)))
             print("Store cut. Cut stats:")
             print("coefficients:",coefficients)
             print(">=rhs:",rhs)
@@ -220,32 +224,23 @@ def node_callback(p, data):
 
 
 # 定义Master Problem
-p=xp.problem()
+p = xp.problem()
 
 # 定义第一阶段变量
-x=[xp.var(vartype=xp.binary) for i in range(n1)]
+x = [xp.var(vartype=xp.binary) for i in range(n1)]
 
 # 修改Lower Bound
-theta=xp.var()
+theta = xp.var()
 p.addVariable(x,theta)
 
 # 定义目标函数
 p.setObjective(xp.Sum(c1[jj]*x[jj] for jj in range(n1)) +  theta               \
                ,sense=xp.minimize)
 
-# Declares a user integer solution callback function, called when an 
-# integer solution is found by heuristics or during the branch and bound 
-# search, but before it is accepted by the Optimizer. This callback 
-# function will be called in addition to any integer solution callbacks 
-# already added by addcbpreintsol.
+# 定义整数规划的返回函数
 p.addcbpreintsol (integer_callback, None, 0)
 
-# Declares an optimal node callback function, called during the branch and 
-# bound search, after the LP relaxation has been solved for the current 
-# node, and after any internal cuts and heuristics have been applied, but 
-# before the Optimizer checks if the current node should be branched. This 
-# callback function will be called in addition to any callbacks already 
-# added by addcboptnode.
+# 定义线性规划部分的返回函数
 p.addcboptnode (node_callback, None, 0)
 
 p.setControl({"presolve":0,"mippresolve":0,"symmetry":0})
